@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="csvshema" format="csv">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: array
+items:
+    properties:
+        id:
+            type: string
+        name:
+            type: string
+        mark:
+            type: number]]></types:shape>
+    </types:type>
+    <types:type name="xmlschema" format="xml">
+      <types:shape format="xml-schema" element="studentdata" location="schemas/student.xsd"/>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#b3d4c2ed-93b0-4217-b7d1-8c3c904557ee">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="csvshema"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="xmlschema"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

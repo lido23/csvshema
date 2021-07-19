@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="csv_schema_xmlFlow" doc:id="197e298f-7973-4cba-8521-8f0526d01400" >
+		<file:listener doc:name="On New or Updated File" doc:id="519e6698-4cac-45be-b258-bb826c48469c" directory="C:\Users\hailu\OneDrive\Desktop\sch_example\income_csv" recursive="false" watermarkMode="CREATED_TIMESTAMP" moveToDirectory="C:\Users\hailu\OneDrive\Desktop\sch_example\processing">
+			<scheduling-strategy >
+				<fixed-frequency startDelay="500"/>
+			</scheduling-strategy>
+		</file:listener>
+		<logger level="INFO" doc:name="Logger" doc:id="69b53b06-6b61-4510-ad60-a6a890a31333" message="#[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="b3d4c2ed-93b0-4217-b7d1-8c3c904557ee" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+{
+	studentdata: {
+		(payload map ( payload01 , indexOfPayload01 ) -> {
+			stu: {
+				id: payload01.id as Number,
+				name: payload01.name,
+				mark: payload01.mark
+			}
+		})
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="89d5811c-df5c-45ce-afb3-3a0fe2b8efa0" message="#[payload]"/>
+		<file:write doc:name="Write" doc:id="eba75734-d2d5-4156-a989-fb77bb36825e" path="C:\Users\hailu\OneDrive\Desktop\sch_example\destnation_csv_write\student1.xml"/>
+	</flow>
+</mule>
